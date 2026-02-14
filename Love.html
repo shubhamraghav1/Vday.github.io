@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        background: url("https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/20250817_121550.jpg") center/cover no-repeat;
+    }
+
+    #container {
+        position: relative;
+        z-index: 2;
+    }
+
+    h1 {
+        font-size: 2.2rem;
+        text-shadow: 0 0 10px black;
+        margin-bottom: 20px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    #yes {
+        background: #ff4da6;
+        color: white;
+    }
+
+    #no {
+        background: #333;
+        color: white;
+        position: absolute;
+    }
+
+    #message {
+        display: none;
+        font-size: 2rem;
+        margin-top: 20px;
+        animation: pop 0.6s ease-out forwards;
+        z-index: 5;
+        position: relative;
+    }
+
+    @keyframes pop {
+        0% { transform: scale(0); opacity: 0; }
+        60% { transform: scale(1.2); opacity: 1; }
+        100% { transform: scale(1); }
+    }
+
+    .photo {
+        width: 250px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 0 20px black;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        animation: zoomIn 0.8s forwards;
+        z-index: 10;
+    }
+
+    @keyframes zoomIn {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    /* FINAL MESSAGE ONLY (heart removed) */
+    #finalHeart {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 0 0 10px black;
+        animation: heartPop 1s forwards;
+        display: none;
+        z-index: 9999;
+    }
+
+    @keyframes heartPop {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        60% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    #musicBtn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        font-size: 1rem;
+    }
+
+</style>
+</head>
+<body>
+
+<button id="musicBtn">🎵 Music</button>
+
+<audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/audio/2024/02/16/audio_4a3eac2f2f.mp3" type="audio/mpeg">
+</audio>
+
+<div id="container">
+    <h1>Will you be my Valentine? ❤️</h1>
+
+    <button id="yes">Yes 💕</button>
+    <button id="no">No 😭</button>
+
+    <div id="message">Yayyyy ❤️🥰</div>
+</div>
+
+<!-- Final message only (heart removed) -->
+<div id="finalHeart">I love you goluuu</div>
+
+<script>
+let noBtn = document.getElementById("no");
+let yesBtn = document.getElementById("yes");
+let message = document.getElementById("message");
+let finalHeart = document.getElementById("finalHeart");
+
+let noClicks = 0;
+
+const photos = [
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/957A6231.JPG",
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/IMG_9974.JPG",
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/Picsart_25-12-02_15-51-50-377.jpg",
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/replicate-prediction-0srnnfs27hrm80ctw0nasadm78.png"
+];
+
+noBtn.addEventListener("mouseover", () => {
+    if (noClicks >= 3) return;
+    let newX = Math.random() * (window.innerWidth - 100);
+    let newY = Math.random() * (window.innerHeight - 100);
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+});
+
+noBtn.addEventListener("click", () => {
+    noClicks++;
+    if (noClicks >= 3) {
+        alert("Arre goluuu, please click YES 😭💕");
+    }
+});
+
+yesBtn.addEventListener("click", () => {
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+
+    message.style.display = "block";
+
+    setTimeout(() => {
+        message.style.display = "none";
+        showPhotos();
+    }, 1000);
+});
+
+function showPhotos() {
+    let index = 0;
+
+    function nextPhoto() {
+        if (index === photos.length) {
+            setTimeout(() => {
+                finalHeart.style.display = "block";
+            }, 1000);
+            return;
+        }
+
+        let img = document.createElement("img");
+        img.src = photos[index];
+        img.className = "photo";
+        document.body.appendChild(img);
+
+        index++;
+        setTimeout(nextPhoto, 1200);
+    }
+
+    nextPhoto();
+}
+
+/* Music Toggle */
+let music = document.getElementById("bgMusic");
+let musicBtn = document.getElementById("musicBtn");
+
+musicBtn.onclick = () => {
+    music.play().catch(()=>{}); // extra safety
+    if (music.paused) {
+        music.play();
+        musicBtn.innerText = "🔊 Playing";
+    } else {
+        music.pause();
+        musicBtn.innerText = "🎵 Music";
+    }
+};
+</script>
+
+</body>
+</html>
