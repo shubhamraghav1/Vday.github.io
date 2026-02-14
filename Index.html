@@ -84,20 +84,19 @@
         100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     }
 
-    /* FINAL MESSAGE ONLY (heart removed) */
+    /* FINAL TEXT POP */
     #finalHeart {
+        font-size: 2.2rem;
+        font-weight: bold;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0);
         opacity: 0;
-        color: white;
-        font-size: 2rem;
-        font-weight: bold;
-        text-shadow: 0 0 10px black;
         animation: heartPop 1s forwards;
         display: none;
         z-index: 9999;
+        text-shadow: 0 0 10px black;
     }
 
     @keyframes heartPop {
@@ -117,14 +116,13 @@
         border: none;
         font-size: 1rem;
     }
-
 </style>
 </head>
 <body>
 
 <button id="musicBtn">🎵 Music</button>
 
-<audio id="bgMusic" loop>
+<audio id="bgMusic" preload="auto" loop>
     <source src="https://cdn.pixabay.com/audio/2024/02/16/audio_4a3eac2f2f.mp3" type="audio/mpeg">
 </audio>
 
@@ -137,10 +135,46 @@
     <div id="message">Yayyyy ❤️🥰</div>
 </div>
 
-<!-- Final message only (heart removed) -->
-<div id="finalHeart">I love you goluuu</div>
+<!-- FINAL TEXT ONLY -->
+<div id="finalHeart">I love you goluuu ❤️</div>
 
 <script>
+
+/* --------------------------------------------------
+   PRELOAD IMAGES + AUDIO
+-------------------------------------------------- */
+
+const photosToPreload = [
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/957A6231.JPG",
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/IMG_9974.JPG",
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/Picsart_25-12-02_15-51-50-377.jpg",
+    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/replicate-prediction-0srnnfs27hrm80ctw0nasadm78.png"
+];
+
+let loadedCount = 0;
+let allLoaded = false;
+
+// Preload images
+photosToPreload.forEach(src => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+        loadedCount++;
+        if (loadedCount === photosToPreload.length) {
+            allLoaded = true;
+            console.log("All photos preloaded!");
+        }
+    };
+});
+
+// Preload audio
+const audio = document.getElementById("bgMusic");
+audio.load();
+
+/* --------------------------------------------------
+   MAIN LOGIC
+-------------------------------------------------- */
+
 let noBtn = document.getElementById("no");
 let yesBtn = document.getElementById("yes");
 let message = document.getElementById("message");
@@ -148,13 +182,9 @@ let finalHeart = document.getElementById("finalHeart");
 
 let noClicks = 0;
 
-const photos = [
-    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/957A6231.JPG",
-    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/IMG_9974.JPG",
-    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/Picsart_25-12-02_15-51-50-377.jpg",
-    "https://raw.githubusercontent.com/shubhamraghav1/Vday/refs/heads/main/replicate-prediction-0srnnfs27hrm80ctw0nasadm78.png"
-];
+const photos = photosToPreload;
 
+// No button jumping
 noBtn.addEventListener("mouseover", () => {
     if (noClicks >= 3) return;
     let newX = Math.random() * (window.innerWidth - 100);
@@ -170,6 +200,7 @@ noBtn.addEventListener("click", () => {
     }
 });
 
+// YES BUTTON FLOW
 yesBtn.addEventListener("click", () => {
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
@@ -182,6 +213,7 @@ yesBtn.addEventListener("click", () => {
     }, 1000);
 });
 
+// Show photos with smooth preload
 function showPhotos() {
     let index = 0;
 
@@ -205,17 +237,15 @@ function showPhotos() {
     nextPhoto();
 }
 
-/* Music Toggle */
-let music = document.getElementById("bgMusic");
+// Music button
 let musicBtn = document.getElementById("musicBtn");
 
 musicBtn.onclick = () => {
-    music.play().catch(()=>{}); // extra safety
-    if (music.paused) {
-        music.play();
+    if (audio.paused) {
+        audio.play();
         musicBtn.innerText = "🔊 Playing";
     } else {
-        music.pause();
+        audio.pause();
         musicBtn.innerText = "🎵 Music";
     }
 };
